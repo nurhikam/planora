@@ -1,43 +1,130 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  --color-not-started: #e11d48;
-  --color-in-progress: #d97706;
-  --color-done: #059669;
-  --color-primary: #6366f1;
-  --color-primary-dark: #4f46e5;
-}
+@custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Base colors */
   --background: #ffffff;
-  --foreground: #09090b;
+  --foreground: #0a0a0a;
+
+  /* Surface */
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+
+  /* Borders */
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #18181b;
+
+  /* States */
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+
+  /* Interactive */
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+
+  /* Status colors */
+  --success: #22c55e;
+  --success-bg: #dcfce7;
+  --warning: #3b82f6;
+  --warning-bg: #dbeafe;
+  --error: #ef4444;
+  --error-bg: #fee2e2;
+
+  /* Radius */
+  --radius: 0.5rem;
 }
 
 .dark {
   --background: #09090b;
   --foreground: #fafafa;
+
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #d4d4d8;
+
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.1);
+  --warning: #3b82f6;
+  --warning-bg: rgba(59, 130, 246, 0.1);
+  --error: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+}
+
+* {
+  border-color: var(--border);
+  outline-color: var(--ring);
 }
 
 body {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
-  .dark .glass {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Selection */
+::selection {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Smooth animations */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: background-color, border-color, color, fill, stroke;
   }
 }
