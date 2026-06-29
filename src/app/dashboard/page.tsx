@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -36,18 +36,33 @@ export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(
     format(new Date(), "yyyy-MM-dd"),
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | "ALL">("ALL");
+  const [sortBy, setSortBy] = useState<
+    "newest" | "oldest" | "title-asc" | "title-desc"
+  >("newest");
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
+  // Debounce search query (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const dateStr = selectedDate;
   const params = new URLSearchParams({ date: dateStr });
+  if (debouncedSearch) params.set("search", debouncedSearch);
+  if (statusFilter !== "ALL") params.set("status", statusFilter);
+  params.set("sort", sortBy);
   const { data, mutate, isLoading } = useSWR(`/api/tasks?${params}`, fetcher);
   const tasks = (data?.data || []) as Task[];
-  const tasksOnSelectedDate = tasks.filter((t) => {
-    const taskDate = t.date.split("T")[0];
-    return taskDate === dateStr;
-  });
+
+  const tasksOnSelectedDate = useMemo(() => {
+    return tasks.filter((t) => t.date.split("T")[0] === dateStr);
+  }, [tasks, dateStr]);
 
   if (status === "unauthenticated") {
     router.push("/login");
@@ -180,6 +195,52 @@ export default function DashboardPage() {
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             Here&apos;s what&apos;s planned and how it&apos;s tracking.
           </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative w-full max-w-[200px]">
+            <input
+              type="search"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 pl-9 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-colors"
+            />
+            <svg
+              className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as TaskStatus | "ALL")
+            }
+            className="h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 transition-colors"
+          >
+            <option value="ALL">All Status</option>
+            <option value="NOT_STARTED">Not Started</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+          </select>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 transition-colors"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title-asc">Title A-Z</option>
+            <option value="title-desc">Title Z-A</option>
+          </select>
         </div>
       </div>
 
