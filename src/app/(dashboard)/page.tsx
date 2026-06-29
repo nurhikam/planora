@@ -28,6 +28,12 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [aiInput, setAiInput] = useState("");
+  const [isAiParsing, setIsAiParsing] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [summary, setSummary] = useState("");
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
   const dateStr = format(selectedDate, "yyyy-MM-dd");
 
@@ -70,7 +76,57 @@ export default function DashboardPage() {
     const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
     if (res.ok) {
       toast.success("Task deleted");
+      setTaskToDelete(null);
       mutate();
+    }
+  }
+
+  async function handleAiParse() {
+    if (!aiInput.trim()) return;
+    setIsAiParsing(true);
+    try {
+      const res = await fetch("/api/ai/parse-task", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: aiInput }),
+      });
+      if (!res.ok) throw new Error("Failed to parse");
+      const result = await res.json();
+      setTitle(result.data.title);
+      setDescription(result.data.description || "");
+      setShowForm(true);
+      setAiInput("");
+      toast.success("Task parsed!");
+    } catch {
+      toast.error("Failed to parse task");
+    } finally {
+      setIsAiParsing(false);
+    }
+  }
+
+  async function generateDailySummary() {
+    setIsGeneratingSummary(true);
+    try {
+      const res = await fetch("/api/ai/daily-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: dateStr }),
+      });
+      if (!res.ok) throw new Error("Failed to generate summary");
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let text = "";
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        text += decoder.decode(value);
+      }
+      setSummary(text);
+      setShowSummary(true);
+    } catch {
+      toast.error("Failed to generate summary");
+    } finally {
+      setIsGeneratingSummary(false);
     }
   }
 
@@ -97,6 +153,34 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr_240px]">
         {/* Sidebar - Calendar */}
         <aside className="space-y-6">
+          {/* AI Input Bar */}
+          <div className="rounded-lg border border-border p-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">
+                ✨
+              </span>
+              <span className="text-xs font-medium">Ask AI</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="e.g., Meeting tomorrow at 3pm"
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAiParse()}
+                disabled={isAiParsing}
+                className="flex-1 h-8 px-2 rounded-md border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+              />
+              <button
+                onClick={handleAiParse}
+                disabled={isAiParsing || !aiInput.trim()}
+                className="h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                {isAiParsing ? "..." : "Parse"}
+              </button>
+            </div>
+          </div>
+
           {/* Quick Add */}
           <button
             onClick={() => setShowForm(!showForm)}
@@ -169,9 +253,18 @@ export default function DashboardPage() {
 
           {/* Summary */}
           <div className="space-y-2">
-            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Summary
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Summary
+              </h3>
+              <button
+                onClick={generateDailySummary}
+                disabled={isGeneratingSummary || tasks.length === 0}
+                className="text-xs text-primary hover:underline disabled:opacity-50"
+              >
+                {isGeneratingSummary ? "..." : "AI Summary"}
+              </button>
+            </div>
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
                 <span className="flex items-center gap-2">
@@ -273,14 +366,44 @@ export default function DashboardPage() {
             </form>
           )}
 
-          {/* Task List */}
+          {/* AI Summary Card */}
+          {showSummary && summary && (
+            <div className="mb-4 rounded-lg border border-border bg-muted/50 p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">📊</span>
+                  <h3 className="text-sm font-medium">Daily Summary</h3>
+                </div>
+                <button
+                  onClick={() => setShowSummary(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                {summary}
+              </p>
+            </div>
+          )}
+
+          {/* Task List with Skeletons */}
           {isLoading ? (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-20 rounded-lg bg-muted animate-pulse"
-                />
+                  className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-4 h-4 rounded bg-muted animate-pulse" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-3/4 rounded bg-muted animate-pulse" />
+                      <div className="h-3 w-full rounded bg-muted animate-pulse" />
+                      <div className="h-3 w-2/3 rounded bg-muted animate-pulse" />
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : tasks.length === 0 ? (
@@ -299,11 +422,37 @@ export default function DashboardPage() {
             <SortableTaskList
               tasks={tasks}
               onUpdateStatus={updateTaskStatus}
-              onDelete={deleteTask}
+              onDelete={(taskId) => setTaskToDelete(taskId)}
             />
           )}
         </main>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {taskToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-md rounded-lg border border-border bg-background p-6 shadow-lg">
+            <h3 className="text-sm font-medium mb-2">Delete Task?</h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setTaskToDelete(null)}
+                className="h-9 px-4 rounded-md border border-input bg-background text-xs hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteTask(taskToDelete)}
+                className="h-9 px-4 rounded-md bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
