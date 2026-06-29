@@ -11,23 +11,32 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { UserMenu } from "./user-menu";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { theme, toggle } = useTheme();
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const formatDate = () => {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] dark:bg-[#0A0A0A] text-zinc-900 dark:text-zinc-100">
       <aside className="hidden w-60 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0C0C0C] px-4 py-5 md:flex">
-        <div className="mb-8 flex items-center gap-2.5 px-1">
-          <Image
-            src="/plannora logo.png"
-            alt="Planora"
-            width={32}
-            height={32}
-            className="object-contain"
-          />
+        <div className="mb-8 px-1">
           <span className="font-display text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Planora
           </span>
@@ -61,19 +70,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-h-screen flex-1 flex-col">
         <header className="sticky top-0 z-30 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-[#0C0C0C]/80 backdrop-blur-md px-4 py-3 md:px-6">
-          <div className="flex items-center gap-2 md:hidden">
-            <Image
-              src="/plannora logo.png"
-              alt="Planora"
-              width={24}
-              height={24}
-              className="object-contain"
-            />
-            <span className="font-display text-sm font-semibold">Planora</span>
+          <div className="flex items-center gap-3">
+            <div className="md:hidden">
+              <span className="font-display text-sm font-semibold">
+                Planora
+              </span>
+            </div>
+            <div className="hidden md:block">
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                {getGreeting()}
+                {session?.user?.name
+                  ? `, ${session.user.name.split(" ")[0]}`
+                  : ""}
+              </p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                {formatDate()}
+              </p>
+            </div>
           </div>
-          <h1 className="hidden font-display text-[15px] font-medium text-zinc-500 dark:text-zinc-400 md:block">
-            {pathname === "/dashboard" ? "Today's overview" : ""}
-          </h1>
+
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
@@ -82,8 +97,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <div className="md:hidden">
+            <div className="hidden md:block">
               <UserMenu />
+            </div>
+            <div className="md:hidden">
+              <UserMenu mobile />
             </div>
           </div>
         </header>

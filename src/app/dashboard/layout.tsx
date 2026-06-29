@@ -25,28 +25,6 @@ function DashboardNavbar() {
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0A0A0A] px-4 md:px-6">
-      <div className="flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded bg-blue-600 text-white shadow-sm">
-          <span className="text-sm font-bold leading-none tracking-tight">
-            P
-          </span>
-        </div>
-        <span className="font-semibold text-sm tracking-tight hidden sm:inline-block">
-          Planora
-        </span>
-      </div>
-
-      <div className="flex flex-1 items-center justify-center max-w-md mx-4">
-        <div className="relative w-full max-w-[320px]">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-400" />
-          <Input
-            type="search"
-            placeholder="Search tasks..."
-            className="h-9 w-full bg-zinc-100 dark:bg-zinc-900 border-transparent shadow-none pl-9 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:bg-white dark:focus-visible:bg-zinc-950 transition-colors"
-          />
-        </div>
-      </div>
-
       <div className="flex items-center gap-3">
         {session?.user && (
           <DropdownMenu>

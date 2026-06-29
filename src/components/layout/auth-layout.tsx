@@ -1,5 +1,4 @@
 import { CalendarDays } from "lucide-react";
-import Image from "next/image";
 
 export default function AuthLayout({
   children,
@@ -17,13 +16,6 @@ export default function AuthLayout({
           }}
         />
         <div className="relative z-10 flex items-center gap-2">
-          <Image
-            src="/plannora logo.png"
-            alt="Planora"
-            width={32}
-            height={32}
-            className="object-contain"
-          />
           <span className="font-display text-lg font-semibold tracking-tight">
             Planora
           </span>
