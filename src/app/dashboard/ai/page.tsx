@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Sparkles,
   Loader2,
@@ -8,6 +9,7 @@ import {
   Brain,
   Lightbulb,
   Target,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +42,7 @@ const PROMPTS = [
 ];
 
 export default function AIAssistantPage() {
+  const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<AISuggestion[]>([]);
@@ -105,6 +108,13 @@ export default function AIAssistantPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="mb-6">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white mb-3 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Back to Dashboard
+        </button>
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
           <Sparkles className="text-blue-500" size={24} />
           AI Assistant

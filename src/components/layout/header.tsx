@@ -17,16 +17,7 @@ export function Header({ user }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md shadow-sm">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-8">
-        <div className="flex items-center gap-3">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-md">
-            <span className="text-white font-bold text-xs">P</span>
-          </div>
-          <span className="text-base font-semibold tracking-tight text-zinc-900 dark:text-white">
-            Planora
-          </span>
-        </div>
-
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-end px-4 lg:px-8">
         <div className="flex items-center gap-3">
           <ThemeToggle />
 

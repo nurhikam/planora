@@ -43,8 +43,11 @@ export default function DashboardPage() {
   const dateStr = selectedDate;
   const params = new URLSearchParams({ date: dateStr });
   const { data, mutate, isLoading } = useSWR(`/api/tasks?${params}`, fetcher);
-  const tasks = (data?.items || []) as Task[];
-  const tasksOnSelectedDate = tasks.filter((t) => t.date === dateStr);
+  const tasks = (data?.data || []) as Task[];
+  const tasksOnSelectedDate = tasks.filter((t) => {
+    const taskDate = t.date.split("T")[0];
+    return taskDate === dateStr;
+  });
 
   if (status === "unauthenticated") {
     router.push("/login");
@@ -70,7 +73,7 @@ export default function DashboardPage() {
     date: string;
     status: TaskStatus;
   }) {
-    const res = await fetch(`/api/tasks?date=${data.date}`, {
+    const res = await fetch(`/api/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -85,7 +88,8 @@ export default function DashboardPage() {
       setModalOpen(false);
       await mutate();
     } else {
-      toast.error("Failed to create task");
+      const error = await res.json();
+      toast.error(error.message || "Failed to create task");
     }
   }
 
@@ -129,7 +133,7 @@ export default function DashboardPage() {
     date: string;
     status: string;
   }) {
-    const res = await fetch(`/api/tasks?date=${suggestion.date}`, {
+    const res = await fetch(`/api/tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -143,7 +147,8 @@ export default function DashboardPage() {
       toast.success("Task added!");
       mutate();
     } else {
-      toast.error("Failed to add task");
+      const error = await res.json();
+      toast.error(error.message || "Failed to add task");
     }
   }
 

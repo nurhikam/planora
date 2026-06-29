@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, Sun } from "lucide-react";
+import { Search } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
@@ -48,15 +48,6 @@ function DashboardNavbar() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50"
-        >
-          <Sun className="h-4 w-4" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-
         {session?.user && (
           <DropdownMenu>
             <DropdownMenuTrigger>

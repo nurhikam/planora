@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   format,
   startOfMonth,
@@ -14,7 +15,7 @@ import {
   isSameDay,
 } from "date-fns";
 import useSWR from "swr";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -28,6 +29,7 @@ interface Task {
 }
 
 export default function CalendarPage() {
+  const router = useRouter();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -37,7 +39,7 @@ export default function CalendarPage() {
   const endDate = endOfWeek(monthEnd);
 
   const { data } = useSWR(`/api/tasks`, fetcher);
-  const tasks = (data?.items || []) as Task[];
+  const tasks = (data?.data || []) as Task[];
 
   function getTasksForDay(day: Date) {
     return tasks.filter((task) => isSameDay(new Date(task.date), day));
@@ -57,6 +59,13 @@ export default function CalendarPage() {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="mb-6">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white mb-3 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Back to Dashboard
+        </button>
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
           Calendar
         </h1>
