@@ -13,6 +13,8 @@ const suggestionSchema = z.array(
   }),
 );
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -24,6 +26,22 @@ export async function POST(request: Request) {
       return Response.json({ error: "Prompt is required" }, { status: 400 });
     }
 
+    const provider = process.env.AI_PROVIDER || "deepseek";
+    const apiKey = process.env.DEEPSEEK_API_KEY;
+    const model = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
+
+    console.log("[AI] Provider:", provider);
+    console.log("[AI] Model:", model);
+    console.log("[AI] API Key exists:", !!apiKey);
+
+    if (!apiKey && provider === "deepseek") {
+      throw new Error("DEEPSEEK_API_KEY not configured");
+    }
+
+    console.log(
+      "[AI] Generating suggestions for prompt:",
+      prompt.substring(0, 50) + "...",
+    );
     const { object } = await generateObject({
       model: getAIModel(),
       schema: suggestionSchema,
@@ -47,8 +65,13 @@ export async function POST(request: Request) {
       `,
     });
 
+    console.log("[AI] Success, generated", object.length, "suggestions");
     return Response.json({ suggestions: object });
-  } catch (error) {
-    return handleApiError(error);
+  } catch (error: any) {
+    console.error("[AI] Error:", error?.message || error);
+    return Response.json(
+      { error: error?.message || "Failed to generate suggestions" },
+      { status: 500 },
+    );
   }
 }
