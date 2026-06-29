@@ -4,6 +4,8 @@ import { registerSchema } from "@/lib/validations";
 import { handleApiError, ValidationError } from "@/lib/errors";
 import { registerRateLimiter, checkRateLimit } from "@/lib/rate-limiter";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   try {
     const ip =

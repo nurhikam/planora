@@ -2,6 +2,8 @@ import { authService } from "@/lib/services/auth.service";
 import { handleApiError } from "@/lib/errors";
 import { verifyRateLimiter, checkRateLimit } from "@/lib/rate-limiter";
 
+export const runtime = "nodejs";
+
 export async function GET(request: Request) {
   try {
     const ip =

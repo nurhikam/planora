@@ -20,7 +20,7 @@ interface AISuggestion {
 }
 
 const PROMPTS = [
-  "Break down: prep BNI BRD review",
+  "Break down: prepare project documentation",
   "Plan my week",
   "Draft mentoring session agenda",
 ];

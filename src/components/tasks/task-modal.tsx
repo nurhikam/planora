@@ -103,7 +103,7 @@ export default function TaskModal({
               autoFocus
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Review BRD vs FSD for Paylater"
+              placeholder="e.g. Prepare project documentation"
               className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-blue-500 dark:text-white"
             />
           </div>

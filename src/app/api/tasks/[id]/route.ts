@@ -3,6 +3,8 @@ import { taskService } from "@/lib/services/task.service";
 import { updateTaskSchema } from "@/lib/validations";
 import { handleApiError, AuthError, ValidationError } from "@/lib/errors";
 
+export const runtime = "nodejs";
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
