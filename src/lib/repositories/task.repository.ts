@@ -12,6 +12,7 @@ export const taskRepository = {
       date?: string;
       status?: TaskStatus;
       search?: string;
+      sort?: "newest" | "oldest" | "title-asc" | "title-desc";
       page?: number;
       limit?: number;
     },
@@ -40,9 +41,22 @@ export const taskRepository = {
     const page = filters?.page ?? 1;
     const limit = filters?.limit ?? 20;
 
+    const orderBy: Prisma.TaskOrderByWithRelationInput = {};
+    const sort = filters?.sort || "newest";
+
+    if (sort === "newest") {
+      orderBy.createdAt = "desc";
+    } else if (sort === "oldest") {
+      orderBy.createdAt = "asc";
+    } else if (sort === "title-asc") {
+      orderBy.title = "asc";
+    } else if (sort === "title-desc") {
+      orderBy.title = "desc";
+    }
+
     return prisma.task.findMany({
       where,
-      orderBy: { date: "asc" },
+      orderBy,
       skip: (page - 1) * limit,
       take: limit,
     });
