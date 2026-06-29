@@ -422,7 +422,7 @@ export default function DashboardPage() {
             <SortableTaskList
               tasks={tasks}
               onUpdateStatus={updateTaskStatus}
-              onDelete={(taskId) => setTaskToDelete(taskId)}
+              onDelete={async (taskId) => setTaskToDelete(taskId)}
             />
           )}
         </main>
