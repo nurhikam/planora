@@ -58,7 +58,7 @@ export default function DashboardPage() {
   if (statusFilter !== "ALL") params.set("status", statusFilter);
   params.set("sort", sortBy);
   const { data, mutate, isLoading } = useSWR(`/api/tasks?${params}`, fetcher);
-  const tasks = (data?.data || []) as Task[];
+  const tasks = useMemo(() => (data?.data || []) as Task[], [data?.data]);
 
   const tasksOnSelectedDate = useMemo(() => {
     return tasks.filter((t) => t.date.split("T")[0] === dateStr);

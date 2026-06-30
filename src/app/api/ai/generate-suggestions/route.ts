@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { generateObject } from "ai";
 import { getAIModel } from "@/lib/ai-provider";
 import { z } from "zod";
-import { handleApiError, AuthError } from "@/lib/errors";
+import { AuthError } from "@/lib/errors";
 
 const suggestionSchema = z.array(
   z.object({
@@ -67,11 +67,10 @@ export async function POST(request: Request) {
 
     console.log("[AI] Success, generated", object.length, "suggestions");
     return Response.json({ suggestions: object });
-  } catch (error: any) {
-    console.error("[AI] Error:", error?.message || error);
-    return Response.json(
-      { error: error?.message || "Failed to generate suggestions" },
-      { status: 500 },
-    );
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to generate suggestions";
+    console.error("[AI] Error:", message);
+    return Response.json({ error: message }, { status: 500 });
   }
 }

@@ -2,8 +2,6 @@
 
 import { SessionProvider } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
