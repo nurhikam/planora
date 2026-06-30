@@ -16,9 +16,7 @@ export default function AuthLayout({
           }}
         />
         <div className="relative z-10 flex items-center gap-2">
-          <span className="font-display text-lg font-semibold tracking-tight">
-            Planora
-          </span>
+          <img src="/planora_logo.png" alt="Planora" className="h-8 w-auto" />
         </div>
 
         <div className="relative z-10">

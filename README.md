@@ -1,8 +1,7 @@
-# 📋 Planora — Implementation Plan
+# 📋 Planora
 
-> **Project Name**: Planora (*"Plan" + "ora" — Latin for time*)
-> **Role**: AI Engineer Take-Home Assignment
-> **Objective**: Build a To-Do List & Calendar Web Application with AI-powered features
+> **Project Name**: Planora (_"Plan" + "ora" — Latin for time_)
+> **Description**: A To-Do List & Calendar Web Application with AI-powered features
 
 ---
 
@@ -14,21 +13,21 @@ Planora is a full-stack To-Do List & Calendar web application that allows users 
 
 ## 🛠 Technology Stack
 
-| Layer | Technology | Rationale |
-|-------|-----------|-----------|
-| **Framework** | Next.js 15 (App Router) | Full-stack in one repo, SSR/SSG, API routes built-in |
-| **Language** | TypeScript | Type safety, better DX, engineering rigor |
-| **Database** | PostgreSQL (Neon) + Prisma ORM | Serverless-ready, free tier, native Vercel integration, type-safe queries |
-| **Authentication** | NextAuth.js v5 (Auth.js) | Native Next.js integration, JWT strategy, battle-tested security |
-| **Email Service** | Resend | Fast email delivery for verification links (generous free tier) |
-| **Styling** | Tailwind CSS 4 + shadcn/ui | Rapid premium UI development, accessible components |
-| **AI/LLM** | Vercel AI SDK (Multi-Provider) | Natural language task parsing, daily summaries. Supports Gemini, OpenAI, Anthropic via env config |
-| **Validation** | Zod | Runtime + compile-time validation |
-| **Date Handling** | date-fns | Lightweight, tree-shakeable date utilities |
-| **Email** | Resend + react-email | Transactional emails with React templates, free tier (100/day) |
-| **API Docs** | zod-to-openapi + Scalar | Auto-generate OpenAPI spec from Zod schemas, interactive UI |
-| **Drag & Drop** | @dnd-kit | Modern accessible DnD for task management |
-| **Deployment** | Vercel | Zero-config Next.js deployment |
+| Layer              | Technology                     | Rationale                                                                                         |
+| ------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| **Framework**      | Next.js 15 (App Router)        | Full-stack in one repo, SSR/SSG, API routes built-in                                              |
+| **Language**       | TypeScript                     | Type safety, better DX, engineering rigor                                                         |
+| **Database**       | PostgreSQL (Neon) + Prisma ORM | Serverless-ready, free tier, native Vercel integration, type-safe queries                         |
+| **Authentication** | NextAuth.js v5 (Auth.js)       | Native Next.js integration, JWT strategy, battle-tested security                                  |
+| **Email Service**  | Resend                         | Fast email delivery for verification links (generous free tier)                                   |
+| **Styling**        | Tailwind CSS 4 + shadcn/ui     | Rapid premium UI development, accessible components                                               |
+| **AI/LLM**         | Vercel AI SDK (Multi-Provider) | Natural language task parsing, daily summaries. Supports Gemini, OpenAI, Anthropic via env config |
+| **Validation**     | Zod                            | Runtime + compile-time validation                                                                 |
+| **Date Handling**  | date-fns                       | Lightweight, tree-shakeable date utilities                                                        |
+| **Email**          | Resend + react-email           | Transactional emails with React templates, free tier (100/day)                                    |
+| **API Docs**       | zod-to-openapi + Scalar        | Auto-generate OpenAPI spec from Zod schemas, interactive UI                                       |
+| **Drag & Drop**    | @dnd-kit                       | Modern accessible DnD for task management                                                         |
+| **Deployment**     | Vercel                         | Zero-config Next.js deployment                                                                    |
 
 ---
 
@@ -65,6 +64,7 @@ Planora is a full-stack To-Do List & Calendar web application that allows users 
 ```
 
 **Why this pattern?**
+
 - **Separation of concerns** — each layer has a single responsibility
 - **Testability** — services can be tested without HTTP, repos can be mocked
 - **Swappable** — change database without touching business logic
@@ -315,42 +315,42 @@ API Authorization:
 
 ### Task Endpoints
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/tasks` | List tasks (with filters) | ✅ |
-| `POST` | `/api/tasks` | Create a new task | ✅ |
-| `GET` | `/api/tasks/:id` | Get task details | ✅ |
-| `PUT` | `/api/tasks/:id` | Update task | ✅ |
-| `DELETE` | `/api/tasks/:id` | Delete task | ✅ |
+| Method   | Endpoint         | Description               | Auth |
+| -------- | ---------------- | ------------------------- | ---- |
+| `GET`    | `/api/tasks`     | List tasks (with filters) | ✅   |
+| `POST`   | `/api/tasks`     | Create a new task         | ✅   |
+| `GET`    | `/api/tasks/:id` | Get task details          | ✅   |
+| `PUT`    | `/api/tasks/:id` | Update task               | ✅   |
+| `DELETE` | `/api/tasks/:id` | Delete task               | ✅   |
 
 ### Query Parameters for GET /api/tasks
 
-| Parameter | Type | Example | Description |
-|-----------|------|---------|-------------|
-| `date` | ISO date | `2026-06-28` | Filter by date |
-| `status` | enum | `IN_PROGRESS` | Filter by status |
-| `search` | string | `meeting` | Search title & description |
+| Parameter | Type     | Example       | Description                |
+| --------- | -------- | ------------- | -------------------------- |
+| `date`    | ISO date | `2026-06-28`  | Filter by date             |
+| `status`  | enum     | `IN_PROGRESS` | Filter by status           |
+| `search`  | string   | `meeting`     | Search title & description |
 
 ### AI Endpoints
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/api/ai/parse-task` | Parse natural language into task | ✅ |
-| `POST` | `/api/ai/daily-summary` | Generate AI daily summary | ✅ |
+| Method | Endpoint                | Description                      | Auth |
+| ------ | ----------------------- | -------------------------------- | ---- |
+| `POST` | `/api/ai/parse-task`    | Parse natural language into task | ✅   |
+| `POST` | `/api/ai/daily-summary` | Generate AI daily summary        | ✅   |
 
 ### Auth Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/auth/register` | Register new user, send verification email |
-| `GET` | `/api/auth/verify` | Verify email via token query param |
-| `POST/GET` | `/api/auth/[...nextauth]` | NextAuth handlers (login/logout/session) |
+| Method     | Endpoint                  | Description                                |
+| ---------- | ------------------------- | ------------------------------------------ |
+| `POST`     | `/api/auth/register`      | Register new user, send verification email |
+| `GET`      | `/api/auth/verify`        | Verify email via token query param         |
+| `POST/GET` | `/api/auth/[...nextauth]` | NextAuth handlers (login/logout/session)   |
 
 ### Documentation Endpoint
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/docs` | 👀 Interactive OpenAPI docs (Scalar UI), auto-generated from Zod schemas |
+| Method | Endpoint    | Description                                                              |
+| ------ | ----------- | ------------------------------------------------------------------------ |
+| `GET`  | `/api/docs` | 👀 Interactive OpenAPI docs (Scalar UI), auto-generated from Zod schemas |
 
 ### Environment Variables
 
@@ -401,11 +401,11 @@ Auto-generated OpenAPI specs using `zod-to-openapi` + Scalar UI, served at `/api
 
 ### Why this approach?
 
-| Approach | Verdict |
-|----------|---------|
-| Hand-write OpenAPI YAML | Fragile, drifts from code |
-| next-swagger-doc (JSDoc) | Better, but JSDoc annotations still separate |
-| **zod-to-openapi** ✅ | Schemas are *already* the source of truth for validation. Generate spec directly from Zod. |
+| Approach                 | Verdict                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| Hand-write OpenAPI YAML  | Fragile, drifts from code                                                                  |
+| next-swagger-doc (JSDoc) | Better, but JSDoc annotations still separate                                               |
+| **zod-to-openapi** ✅    | Schemas are _already_ the source of truth for validation. Generate spec directly from Zod. |
 
 ### Implementation
 
@@ -444,6 +444,7 @@ export async function GET() {
 ### 1. Natural Language Task Creation
 
 **User types:**
+
 ```
 User Input:  "Meeting dengan Budi besok jam 3 sore"
      ↓
@@ -458,6 +459,7 @@ User Input:  "Meeting dengan Budi besok jam 3 sore"
 ```
 
 **Implementation:**
+
 ```typescript
 // ai.service.ts — provider-agnostic design
 import { generateObject } from "ai";
@@ -486,8 +488,8 @@ import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
 
 const providers = {
-  gemini:    () => google("gemini-2.0-flash"),
-  openai:    () => openai("gpt-4o-mini"),
+  gemini: () => google("gemini-2.0-flash"),
+  openai: () => openai("gpt-4o-mini"),
   anthropic: () => anthropic("claude-sonnet-4-20250514"),
 } as const;
 
@@ -500,6 +502,7 @@ export function getAIModel() {
 ```
 
 **Capabilities:**
+
 - Relative date parsing: "besok", "lusa", "next Monday", "minggu depan"
 - Time extraction from natural language
 - Bilingual support (Indonesian + English)
@@ -509,6 +512,7 @@ export function getAIModel() {
 ### 2. AI Daily Summary
 
 **One-click streaming summary:**
+
 ```
 📊 Your Day — June 28, 2026
 
@@ -517,11 +521,12 @@ You have 8 tasks today:
   🔄 2 in progress — "Project proposal" and "Code review"
   📋 3 not started — Consider prioritizing "Client meeting prep"
 
-💡 Suggestion: Focus on completing "Code review" first — 
+💡 Suggestion: Focus on completing "Code review" first —
    it's been in progress the longest.
 ```
 
 **Implementation:**
+
 - Uses `streamText` from Vercel AI SDK for real-time streaming
 - Feeds all tasks for the selected date as context
 - Returns actionable, concise summary
@@ -605,26 +610,26 @@ Every component handles four states — all explicit, no surprises.
 
 ### Per-Layer Strategy
 
-| Layer | Mechanism | Fallback |
-|-------|-----------|----------|
-| **API Route** | Zod validation → structured error response | `{ error, details }` JSON |
-| **Service** | Custom error classes (`NotFoundError`, `AuthError`) | Caught by route handler |
-| **Client (mutations)** | `react-hot-toast` for success/error feedback | Inline form validation errors |
-| **Client (queries)** | SWR/TanStack Query built-in error state | Refetch button, stale data |
-| **AI calls** | Timeout after 15s, max 3 retries | Fall back to manual form with partial AI data |
-| **React boundary** | `<ErrorBoundary>` wraps dashboard | "Something went wrong" + reload button |
+| Layer                  | Mechanism                                           | Fallback                                      |
+| ---------------------- | --------------------------------------------------- | --------------------------------------------- |
+| **API Route**          | Zod validation → structured error response          | `{ error, details }` JSON                     |
+| **Service**            | Custom error classes (`NotFoundError`, `AuthError`) | Caught by route handler                       |
+| **Client (mutations)** | `react-hot-toast` for success/error feedback        | Inline form validation errors                 |
+| **Client (queries)**   | SWR/TanStack Query built-in error state             | Refetch button, stale data                    |
+| **AI calls**           | Timeout after 15s, max 3 retries                    | Fall back to manual form with partial AI data |
+| **React boundary**     | `<ErrorBoundary>` wraps dashboard                   | "Something went wrong" + reload button        |
 
 ### UI Feedback Matrix
 
-| Scenario | UX |
-|----------|----|
-| Task created | Toast: "Task created" (green) |
-| Task delete | Toast: "Task deleted" (red) + undo button in toast |
-| Network failure (fetch tasks) | Skeleton → error card with "Retry" button |
-| AI parsing fails | Show manual form pre-filled with raw input |
-| AI daily summary fails | Show static summary fallback (counts only, no AI) |
-| Email send fails | User still created, show "Verification email failed — resend" button |
-| Unverified user | Soft banner, all features accessible (demo-friendly) |
+| Scenario                      | UX                                                                   |
+| ----------------------------- | -------------------------------------------------------------------- |
+| Task created                  | Toast: "Task created" (green)                                        |
+| Task delete                   | Toast: "Task deleted" (red) + undo button in toast                   |
+| Network failure (fetch tasks) | Skeleton → error card with "Retry" button                            |
+| AI parsing fails              | Show manual form pre-filled with raw input                           |
+| AI daily summary fails        | Show static summary fallback (counts only, no AI)                    |
+| Email send fails              | User still created, show "Verification email failed — resend" button |
+| Unverified user               | Soft banner, all features accessible (demo-friendly)                 |
 
 ### Code structure
 
@@ -635,7 +640,7 @@ export class AppError extends Error {
     public code: string,
     message: string,
     public status: number = 500,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
   }
@@ -663,12 +668,12 @@ export class AuthError extends AppError {
 ```typescript
 // __tests__/services/task.service.test.ts
 describe("TaskService", () => {
-  test("creates task with valid data")
-  test("rejects task without title")
-  test("rejects task with invalid status")
-  test("filters tasks by date")
-  test("filters tasks by status")
-  test("prevents access to other user's tasks")
+  test("creates task with valid data");
+  test("rejects task without title");
+  test("rejects task with invalid status");
+  test("filters tasks by date");
+  test("filters tasks by status");
+  test("prevents access to other user's tasks");
 });
 ```
 
@@ -677,16 +682,16 @@ describe("TaskService", () => {
 ```typescript
 // __tests__/api/tasks.test.ts
 describe("POST /api/tasks", () => {
-  test("creates task — 201")
-  test("rejects unauthenticated — 401")
-  test("rejects invalid body — 400")
+  test("creates task — 201");
+  test("rejects unauthenticated — 401");
+  test("rejects invalid body — 400");
 });
 
 describe("GET /api/tasks", () => {
-  test("returns user's tasks only")
-  test("filters by date")
-  test("filters by status")
-  test("searches by keyword")
+  test("returns user's tasks only");
+  test("filters by date");
+  test("filters by status");
+  test("searches by keyword");
 });
 ```
 
@@ -706,37 +711,37 @@ npm run build          # Production build verification
 
 ### Data Fetching
 
-| Technique | Where | Why |
-|-----------|-------|-----|
-| **SWR / TanStack Query** | All client data fetching | Request deduplication, caching, background revalidation, optimistic updates |
-| **Next.js fetch dedup** | Server components, server actions | Built-in: same `fetch` in same render pass → single request |
-| **Optimistic UI** | Task status change (DnD), task delete | Update cache instantly, revert on error |
-| **Prefetch calendar** | `onMount` prefetch next 2 weeks | Calendar clicks feel instant |
+| Technique                | Where                                 | Why                                                                         |
+| ------------------------ | ------------------------------------- | --------------------------------------------------------------------------- |
+| **SWR / TanStack Query** | All client data fetching              | Request deduplication, caching, background revalidation, optimistic updates |
+| **Next.js fetch dedup**  | Server components, server actions     | Built-in: same `fetch` in same render pass → single request                 |
+| **Optimistic UI**        | Task status change (DnD), task delete | Update cache instantly, revert on error                                     |
+| **Prefetch calendar**    | `onMount` prefetch next 2 weeks       | Calendar clicks feel instant                                                |
 
 ### Frontend
 
-| Technique | Where | Why |
-|-----------|-------|-----|
-| **React.memo** | TaskCard, CalendarDay, TaskFilters | Skip re-render when props unchanged |
-| **useMemo / useCallback** | Expensive computations, callback deps | Stable references, fewer renders |
-| **Image optimization** | Next.js `<Image>` with remote patterns | Automatic WebP, lazy loading |
-| **Route-level code splitting** | App Router by default | Only load code for current route |
+| Technique                      | Where                                  | Why                                 |
+| ------------------------------ | -------------------------------------- | ----------------------------------- |
+| **React.memo**                 | TaskCard, CalendarDay, TaskFilters     | Skip re-render when props unchanged |
+| **useMemo / useCallback**      | Expensive computations, callback deps  | Stable references, fewer renders    |
+| **Image optimization**         | Next.js `<Image>` with remote patterns | Automatic WebP, lazy loading        |
+| **Route-level code splitting** | App Router by default                  | Only load code for current route    |
 
 ### API & Database
 
-| Technique | Where | Why |
-|-----------|-------|-----|
-| **Prisma composite indexes** | `(userId, date)`, `(userId, status)` | All queries filtered by userId — covering index |
-| **Prisma select/omit** | All queries | Never fetch columns you don't need (e.g. `passwordHash`) |
-| **Parallel queries** | Dashboard page | Fetch tasks + user data concurrently where possible |
+| Technique                    | Where                                | Why                                                      |
+| ---------------------------- | ------------------------------------ | -------------------------------------------------------- |
+| **Prisma composite indexes** | `(userId, date)`, `(userId, status)` | All queries filtered by userId — covering index          |
+| **Prisma select/omit**       | All queries                          | Never fetch columns you don't need (e.g. `passwordHash`) |
+| **Parallel queries**         | Dashboard page                       | Fetch tasks + user data concurrently where possible      |
 
 ### Bundle
 
-| Technique | Why |
-|-----------|-----|
-| **`next/dynamic` for calendar** | Calendar lib can be 40kb+ — load only when needed |
-| **Tree-shaking date-fns** | Import only `format`, `startOfMonth`, etc — sub-1kb |
-| **@dnd-kit modular imports** | Only import `@dnd-kit/core`, not the full kitchen sink |
+| Technique                       | Why                                                    |
+| ------------------------------- | ------------------------------------------------------ |
+| **`next/dynamic` for calendar** | Calendar lib can be 40kb+ — load only when needed      |
+| **Tree-shaking date-fns**       | Import only `format`, `startOfMonth`, etc — sub-1kb    |
+| **@dnd-kit modular imports**    | Only import `@dnd-kit/core`, not the full kitchen sink |
 
 ---
 
@@ -824,17 +829,17 @@ jobs:
 
 ### Pipeline Steps
 
-| Step | Purpose | Fail if |
-|------|---------|---------|
-| `npm ci` | Clean install (locked deps) | `package-lock.json` mismatch |
-| `npm run lint` | ESLint static analysis | Code style violations, unused imports |
-| `npm run type-check` | TypeScript strict check | Type errors |
-| `npm run test` | Unit + integration tests | Failing tests |
-| `npm run build` | Production build | Build errors |
+| Step                 | Purpose                     | Fail if                               |
+| -------------------- | --------------------------- | ------------------------------------- |
+| `npm ci`             | Clean install (locked deps) | `package-lock.json` mismatch          |
+| `npm run lint`       | ESLint static analysis      | Code style violations, unused imports |
+| `npm run type-check` | TypeScript strict check     | Type errors                           |
+| `npm run test`       | Unit + integration tests    | Failing tests                         |
+| `npm run build`      | Production build            | Build errors                          |
 
 ### Deployment
 
-Vercel auto-deploys from `main` (via Vercel GitHub integration — no extra Action needed). CI runs as a quality gate *before* Vercel builds.
+Vercel auto-deploys from `main` (via Vercel GitHub integration — no extra Action needed). CI runs as a quality gate _before_ Vercel builds.
 
 ---
 
@@ -844,6 +849,7 @@ Each commit tells a story of the development process.
 All commits use custom dates to reflect a realistic Saturday→Sunday hackathon timeline (June 27–28, 2026).
 
 Commits are created with `GIT_AUTHOR_DATE` and `GIT_COMMITTER_DATE` to backdate:
+
 ```bash
 git commit --date="2026-06-27T09:00:00+07:00" -m "..."
 ```
@@ -882,17 +888,17 @@ git commit --date="2026-06-27T09:00:00+07:00" -m "..."
 
 ## ⏱ Execution Timeline
 
-| Phase | Duration | Deliverables |
-|-------|----------|-------------|
-| **Phase 1: Foundation** | ~3 hours | Project init, Prisma schema, env config |
-| **Phase 2: Authentication** | ~4 hours | NextAuth, register/login pages, email verification, protected routes |
-| **Phase 3: Task API** | ~4.5 hours | Repository pattern, service layer, CRUD + filters, API docs |
-| **Phase 4: Dashboard UI** | ~5 hours | Calendar, task list, forms, status summary |
-| **Phase 5: UI Polish** | ~3 hours | Dark mode, responsive, animations, DnD |
-| **Phase 6: AI Features** | ~4 hours | NL task parsing, daily summary |
-| **Phase 7: Testing** | ~2 hours | Service + API tests |
-| **Phase 8: Documentation** | ~3 hours | README, Architecture.md, seed data |
-| **Phase 9: Deployment** | ~1.5 hours | Vercel setup, CI/CD pipeline, final verification |
+| Phase                       | Duration   | Deliverables                                                         |
+| --------------------------- | ---------- | -------------------------------------------------------------------- |
+| **Phase 1: Foundation**     | ~3 hours   | Project init, Prisma schema, env config                              |
+| **Phase 2: Authentication** | ~4 hours   | NextAuth, register/login pages, email verification, protected routes |
+| **Phase 3: Task API**       | ~4.5 hours | Repository pattern, service layer, CRUD + filters, API docs          |
+| **Phase 4: Dashboard UI**   | ~5 hours   | Calendar, task list, forms, status summary                           |
+| **Phase 5: UI Polish**      | ~3 hours   | Dark mode, responsive, animations, DnD                               |
+| **Phase 6: AI Features**    | ~4 hours   | NL task parsing, daily summary                                       |
+| **Phase 7: Testing**        | ~2 hours   | Service + API tests                                                  |
+| **Phase 8: Documentation**  | ~3 hours   | README, Architecture.md, seed data                                   |
+| **Phase 9: Deployment**     | ~1.5 hours | Vercel setup, CI/CD pipeline, final verification                     |
 
 ---
 

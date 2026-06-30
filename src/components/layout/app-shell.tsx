@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -36,10 +37,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[#FAFAFA] dark:bg-[#0A0A0A] text-zinc-900 dark:text-zinc-100">
       <aside className="hidden w-60 flex-col border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0C0C0C] px-4 py-5 md:flex">
-        <div className="mb-8 px-1">
-          <span className="font-display text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Planora
-          </span>
+        <div className="mb-8 px-1 flex items-center gap-2">
+          <img src="/planora_logo.png" alt="Planora" className="h-8 w-auto" />
         </div>
 
         <nav className="flex flex-1 flex-col gap-1">
