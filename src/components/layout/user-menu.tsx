@@ -2,11 +2,25 @@
 
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, User, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 export function UserMenu({ mobile = false }: { mobile?: boolean }) {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(session?.user?.name || "");
   const user = session?.user;
 
   const getUserInitials = () => {
@@ -16,6 +30,39 @@ export function UserMenu({ mobile = false }: { mobile?: boolean }) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
     return name.slice(0, 2).toUpperCase();
+  };
+
+  const handleSaveProfile = async () => {
+    if (!name.trim()) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim() }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update profile");
+
+      await update();
+      toast.success("Profile updated!");
+      setProfileOpen(false);
+    } catch (error) {
+      console.error("Profile update error:", error);
+      toast.error("Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openProfile = () => {
+    setName(session?.user?.name || "");
+    setProfileOpen(true);
+    setIsOpen(false);
   };
 
   return (
@@ -65,20 +112,17 @@ export function UserMenu({ mobile = false }: { mobile?: boolean }) {
               </p>
             </div>
             <button
-              onClick={() => {
-                setIsOpen(false);
-                // TODO: Add settings page
-              }}
+              onClick={openProfile}
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
-              <Settings size={16} />
-              Settings
+              <User size={16} />
+              Edit Profile
             </button>
             <button
               onClick={() => {
                 signOut({ callbackUrl: "/login" });
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-300 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-900/20"
             >
               <LogOut size={16} />
               Log out
@@ -86,6 +130,65 @@ export function UserMenu({ mobile = false }: { mobile?: boolean }) {
           </div>
         </>
       )}
+
+      {/* Profile Edit Dialog */}
+      <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              Update your profile information below.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                Name
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                Email
+              </label>
+              <Input
+                value={user?.email || ""}
+                disabled
+                className="w-full bg-zinc-100 dark:bg-zinc-800"
+              />
+              <p className="text-xs text-zinc-500">Email cannot be changed</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setProfileOpen(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveProfile}
+              disabled={loading || !name.trim()}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
