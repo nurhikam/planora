@@ -61,7 +61,7 @@ export default function CalendarPage() {
       <div className="mb-6">
         <button
           onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white mb-3 transition-colors"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all mb-4"
         >
           <ArrowLeft size={16} />
           Back to Dashboard
