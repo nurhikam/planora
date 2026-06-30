@@ -130,7 +130,13 @@ describe("TaskService", () => {
       const result = await taskService.createTask(taskData);
 
       expect(result.title).toBe("New Task");
-      expect(taskRepository.create).toHaveBeenCalledWith(taskData);
+      expect(taskRepository.create).toHaveBeenCalledWith({
+        title: "New Task",
+        description: "Task description",
+        date: new Date("2026-06-28"),
+        status: TaskStatus.NOT_STARTED,
+        userId: mockUser.id,
+      });
     });
 
     it("sets default status to NOT_STARTED", async () => {
@@ -149,11 +155,13 @@ describe("TaskService", () => {
 
       await taskService.createTask(taskData);
 
-      expect(taskRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          status: TaskStatus.NOT_STARTED,
-        }),
-      );
+      expect(taskRepository.create).toHaveBeenCalledWith({
+        title: "New Task",
+        description: undefined,
+        date: new Date("2026-06-28"),
+        status: undefined,
+        userId: mockUser.id,
+      });
     });
   });
 
