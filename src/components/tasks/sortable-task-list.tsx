@@ -41,9 +41,9 @@ export function SortableTaskList({
   onReorder,
 }: SortableTaskListProps) {
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: 200, tolerance: 8 },
+      activationConstraint: { delay: 100, tolerance: 5 },
     }),
   );
 

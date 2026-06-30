@@ -31,20 +31,15 @@ export function SortableTaskCard({
   onUpdateStatus,
   onDelete,
 }: SortableTaskCardProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: task.id,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useSortable({
+      id: task.id,
+      transition: { duration: 150, easing: "cubic-bezier(0.25, 1, 0.5, 1)" },
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: "transform 150ms ease",
     opacity: isDragging ? 0.5 : task.status === "DONE" ? 0.6 : 1,
   };
 
@@ -66,7 +61,7 @@ export function SortableTaskCard({
       style={style}
       className={`group relative flex items-start gap-4 rounded-xl border bg-white dark:bg-[#0C0C0C] p-4 shadow-sm transition-all duration-200 ${
         isDragging
-          ? "border-blue-500 ring-2 ring-blue-500/20 shadow-xl scale-[1.02]"
+          ? "border-blue-500 ring-2 ring-blue-500/20 shadow-xl scale-[1.01] z-50"
           : isDone
             ? "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md opacity-75"
             : "border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-lg"
